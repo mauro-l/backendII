@@ -1,50 +1,56 @@
 import { Router } from "express";
 import checkProduct from "../middlewares/checkProduct.middleware.js";
 import productDao from "../dao/MongoDB/product.dao.js";
-import { checkToken } from "../middlewares/checkToken.middleware.js";
+import { passportCall } from "../middlewares/passport.middleware.js";
+import { authorization } from "../middlewares/authorization.middleware.js";
 
 const router = Router();
 
 //Obtener todos los productos
-router.get("/", checkToken, async (req, res) => {
-  try {
-    const { limit, page, sortField, sortOrder, category, status, maxPrice } =
-      req.query;
+router.get(
+  "/",
+  passportCall("jwt"),
+  authorization("user"),
+  async (req, res) => {
+    try {
+      const { limit, page, sortField, sortOrder, category, status, maxPrice } =
+        req.query;
 
-    const options = {
-      limit: Number(limit) > 0 ? Number(limit) : 5,
-      page: Number(page) > 0 ? Number(page) : 1,
-      sort: sortField
-        ? { [sortField]: sortOrder === "asc" ? 1 : -1 }
-        : { createdAt: -1 },
-      lean: true,
-    };
+      const options = {
+        limit: Number(limit) > 0 ? Number(limit) : 5,
+        page: Number(page) > 0 ? Number(page) : 1,
+        sort: sortField
+          ? { [sortField]: sortOrder === "asc" ? 1 : -1 }
+          : { createdAt: -1 },
+        lean: true,
+      };
 
-    const query = {};
+      const query = {};
 
-    if (category) {
-      query.category = category;
-    }
-    if (status) {
-      query.status = status;
-    }
-    if (maxPrice) {
-      const maxPriceNumber = Number(maxPrice);
-      if (isNaN(maxPriceNumber)) {
-        return res
-          .status(400)
-          .json({ error: "Error, ingrese un numero valido" });
+      if (category) {
+        query.category = category;
       }
-      query.price = { $lt: maxPriceNumber };
-    }
+      if (status) {
+        query.status = status;
+      }
+      if (maxPrice) {
+        const maxPriceNumber = Number(maxPrice);
+        if (isNaN(maxPriceNumber)) {
+          return res
+            .status(400)
+            .json({ error: "Error, ingrese un numero valido" });
+        }
+        query.price = { $lt: maxPriceNumber };
+      }
 
-    const products = await productDao.getAllProducts(query, options);
-    res.status(200).json({ status: "success", payload: products });
-  } catch (err) {
-    console.error("error al obtener los productos", err.message);
-    res.status(500).json({ status: "Error", msg: "Internal Server Error" });
+      const products = await productDao.getAllProducts(query, options);
+      res.status(200).json({ status: "success", payload: products });
+    } catch (err) {
+      console.error("error al obtener los productos", err.message);
+      res.status(500).json({ status: "Error", msg: "Internal Server Error" });
+    }
   }
-});
+);
 
 //Obtener producto por Id
 router.get("/:pid", async (req, res) => {

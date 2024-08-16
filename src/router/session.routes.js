@@ -3,23 +3,20 @@ import userDao from "../dao/MongoDB/user.dao.js";
 import { createHash, isValidPassword } from "../utils/hashPassword.js";
 import passport from "passport";
 import { createToken } from "../utils/jwt.js";
+import { passportCall } from "../middlewares/passport.middleware.js";
 
 const router = Router();
 
-router.post(
-  "/register",
-  passport.authenticate("register"),
-  async (req, res) => {
-    try {
-      res.status(201).json({ status: "ok", msg: "User Created" });
-    } catch (err) {
-      console.error(err);
-      res.status(500).json({ status: "error", msg: "Internal server error" });
-    }
+router.post("/register", passportCall("register"), async (req, res) => {
+  try {
+    res.status(201).json({ status: "ok", msg: "User Created" });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ status: "error", msg: "Internal server error" });
   }
-);
+});
 
-router.post("/login", passport.authenticate("login"), async (req, res) => {
+router.post("/login", passportCall("login"), async (req, res) => {
   try {
     res.status(200).json({ status: "ok", payload: req.user });
   } catch (err) {
@@ -67,12 +64,8 @@ router.get(
   }
 );
 
-router.get(
-  "/current",
-  passport.authenticate("jwt", { session: false }),
-  async (req, res) => {
-    res.status(200).json({ status: "ok", user: req.user });
-  }
-);
+router.get("/current", passportCall("jwt"), async (req, res) => {
+  res.status(200).json({ status: "ok", user: req.user });
+});
 
 export default router;
