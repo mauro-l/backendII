@@ -1,11 +1,12 @@
 import { Router } from "express";
 import checkProduct from "../middlewares/checkProduct.middleware.js";
 import productDao from "../dao/MongoDB/product.dao.js";
+import { checkToken } from "../middlewares/checkToken.middleware.js";
 
 const router = Router();
 
 //Obtener todos los productos
-router.get("/", async (req, res) => {
+router.get("/", checkToken, async (req, res) => {
   try {
     const { limit, page, sortField, sortOrder, category, status, maxPrice } =
       req.query;

@@ -11,6 +11,7 @@ import session from "express-session";
 import env from "./src/config/env.config.js";
 import passport from "passport";
 import { initializePassport } from "./src/config/passport.config.js";
+import cookieParser from "cookie-parser";
 
 const PORT = env.PORT;
 const app = express();
@@ -26,7 +27,7 @@ app.engine("handlebars", handlebars.engine());
 app.set("views", __dirname + "/src/views");
 app.set("view engine", "handlebars");
 app.use(express.static("public"));
-
+app.use(cookieParser());
 app.use(
   session({
     secret: env.SECRET_CODE,
