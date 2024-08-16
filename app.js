@@ -7,8 +7,12 @@ import { Server } from "socket.io";
 import viewRoutes from "./src/router/views.routes.js";
 import productManager from "./src/dao/fileSystem/productManager.js";
 import { connectMongoDB } from "./src/config/mongoDB.config.js";
+import session from "express-session";
+import env from "./src/config/env.config.js";
+import passport from "passport";
+import { initializePassport } from "./src/config/passport.config.js";
 
-const PORT = 8080;
+const PORT = env.PORT;
 const app = express();
 app.use(cors());
 
@@ -22,6 +26,17 @@ app.engine("handlebars", handlebars.engine());
 app.set("views", __dirname + "/src/views");
 app.set("view engine", "handlebars");
 app.use(express.static("public"));
+
+app.use(
+  session({
+    secret: env.SECRET_CODE,
+    resave: true,
+    saveUninitialized: true,
+  })
+);
+initializePassport();
+app.use(passport.initialize());
+app.use(passport.session());
 
 //rutas de la api
 app.use("/api", router);

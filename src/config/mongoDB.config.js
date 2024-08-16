@@ -1,15 +1,10 @@
 import mongoose from "mongoose";
-import dotenv from "dotenv";
 //import { seedUserToDB } from "../seed/seedProducts.js";
-
-dotenv.config();
+import env from "./env.config.js";
 
 export const connectMongoDB = async () => {
   try {
-    const { DB_USER, DB_PASSWORD, DB_CLUSTER, DB_NAME } = process.env;
-    const uri = `mongodb+srv://${DB_USER}:${DB_PASSWORD}@${DB_CLUSTER}/${DB_NAME}?retryWrites=true&w=majority`;
-
-    mongoose.connect(uri);
+    mongoose.connect(env.MONGO_URL);
     console.log("MongoDB connected 🌱");
   } catch (err) {
     console.log(`Error: ${err}`);
