@@ -1,5 +1,5 @@
 import { request, response } from "express";
-import categoryDao from "../dao/MongoDB/category.dao.js";
+import categoryRepository from "../persistence/MongoDB/repository/category.repository.js";
 
 const checkCategory = async (req = request, res = response, next) => {
   try {
@@ -26,7 +26,7 @@ const checkCategory = async (req = request, res = response, next) => {
         .json({ status: "Error", msg: "All fields are required." });
     }
 
-    const categories = await categoryDao.getAllCategory();
+    const categories = await categoryRepository.getAllCategory();
 
     //Verifica si se repite algun codigo
     const categoryRepeat = categories.find((element) => element.code === code);

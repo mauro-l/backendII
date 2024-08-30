@@ -1,4 +1,4 @@
-import { productModel } from "./models/products.model.js";
+import { productModel } from "../models/products.model.js";
 
 const getAllProducts = async (query, options) => {
   const products = await productModel.paginate(query, options);
@@ -12,8 +12,7 @@ const createProducts = async (body) => {
 };
 
 const getProductsById = async (id) => {
-  const product = productModel.findById(id);
-
+  const product = await productModel.findById(id);
   return product;
 };
 

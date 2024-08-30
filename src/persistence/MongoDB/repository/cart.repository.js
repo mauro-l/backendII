@@ -1,4 +1,4 @@
-import { cartModel } from "./models/cart.model.js";
+import { cartModel } from "../models/cart.model.js";
 
 const getAllCarts = async () => {
   const carts = await cartModel.find();
@@ -22,14 +22,12 @@ const deleteCart = async (cid) => {
 
 const addProductToCart = async (cid, pid, quantityAdd) => {
   const cart = await getCartById(cid);
-
-  const productInCart = cart.products.find((p) => p.productId == pid);
+  const productInCart = cart.products.find((p) => p.productId._id == pid);
   if (productInCart && quantityAdd) {
     productInCart.quantity += quantityAdd;
   } else if (productInCart && !quantityAdd) {
     productInCart.quantity++;
   } else {
-    console.log("aca");
     cart.products.push({
       productId: pid,
       quantity: 1,
@@ -39,6 +37,11 @@ const addProductToCart = async (cid, pid, quantityAdd) => {
   await cart.save();
 
   return cart;
+};
+
+const updateCart = async (id, data) => {
+  const cartUpdate = await cartModel.findByIdAndUpdate(id, data, { new: true });
+  return cartUpdate;
 };
 
 const updateQuantityToProduct = async (cid, pid, quantity) => {
@@ -67,13 +70,14 @@ const clearProductsToCart = async (cid) => {
   return cart;
 };
 
-export {
+export default {
   getAllCarts,
   getCartById,
   deleteCart,
   createCarts,
   addProductToCart,
   deleteProductToCart,
+  updateCart,
   updateQuantityToProduct,
   clearProductsToCart,
 };

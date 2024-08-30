@@ -1,7 +1,7 @@
 import { request, response } from "express";
-import productDao from "../dao/MongoDB/product.dao.js";
+import productServices from "../services/product.services.js";
 
-const checkProduct = async (req = request, res = response, next) => {
+const checkProductData = async (req = request, res = response, next) => {
   try {
     const { title, description, price, code, stock, category } = req.body;
 
@@ -14,7 +14,7 @@ const checkProduct = async (req = request, res = response, next) => {
       category,
     };
 
-    const products = await productDao.getAllProducts();
+    const products = await productServices.getAllProducts();
 
     //Verifica que esten todos los campos.
     const emptyFields = Object.values(newProduct).some(
@@ -25,7 +25,7 @@ const checkProduct = async (req = request, res = response, next) => {
         (typeof value === "number" && isNaN(value))
     );
     if (emptyFields) {
-      console.log(`Error: campos incompletos.`);
+      console.error(`Error: All fields are required.`);
       return res
         .status(400)
         .json({ status: "Error", msg: "All fields are required." });
@@ -46,4 +46,4 @@ const checkProduct = async (req = request, res = response, next) => {
   }
 };
 
-export default checkProduct;
+export default checkProductData;
