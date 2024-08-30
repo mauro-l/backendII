@@ -51,7 +51,6 @@ const formatDatetime = (ticket) => {
 
 export const generateEmailHtml = (ticket) => {
   const productRows = generateProductRows(ticket.items);
-  console.log("rows", productRows);
   const { date, time } = formatDatetime(ticket);
 
   return `

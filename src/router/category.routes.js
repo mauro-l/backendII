@@ -8,7 +8,6 @@ const router = Router();
 router.get("/", async (req, res) => {
   try {
     const { status } = req.query;
-    console.log(status);
     if (status) {
       const categories = await categoryRepository.getAllCategory({ status });
       return res.status(200).json({ status: "success", payload: categories });
