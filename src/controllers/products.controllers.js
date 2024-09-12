@@ -11,7 +11,7 @@ const getAllProducts = async (req = request, res = response) => {
       page: Number(page) > 0 ? Number(page) : 1,
       sort: sortField
         ? { [sortField]: sortOrder === "asc" ? 1 : -1 }
-        : { createdAt: -1 },
+        : { _id: -1 },
       lean: true,
     };
 
