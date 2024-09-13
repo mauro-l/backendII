@@ -1,11 +1,18 @@
 import { Router } from "express";
 import passport from "passport";
-import { passportCall } from "../middlewares/passport.middleware.js";
+import {
+  passportCall,
+  usePassportStrategy,
+} from "../middlewares/passport.middleware.js";
 import sessionControllers from "../controllers/session.controllers.js";
 
 const router = Router();
 
-router.post("/register", sessionControllers.register);
+router.post(
+  "/register",
+  usePassportStrategy("register"),
+  sessionControllers.register
+);
 
 //Estrategia local mediante passport
 router.post("/login", passportCall("login"), sessionControllers.login);

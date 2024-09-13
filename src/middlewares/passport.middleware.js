@@ -16,3 +16,13 @@ export const passportCall = (strategy) => {
     })(req, res, next);
   };
 };
+
+export const usePassportStrategy = (strategy) => {
+  return async (req = request, res = response, next) => {
+    passport.authenticate(strategy, (err, user, info) => {
+      if (err) return next(err);
+      req.user = user;
+      next();
+    })(req, res, next);
+  };
+};
