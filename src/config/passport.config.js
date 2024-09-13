@@ -26,7 +26,7 @@ export const initializePassport = () => {
             return done(null, false, { message: "User already exists " });
           }
           if (!validateBirthdate(new Date(birthdate))) {
-            return res.status(400).json({
+            return done(null, false, {
               message: "The date of birth is invalid.",
             });
           }

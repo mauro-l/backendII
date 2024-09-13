@@ -5,7 +5,7 @@ import sessionControllers from "../controllers/session.controllers.js";
 
 const router = Router();
 
-router.post("/register", passportCall("register"), sessionControllers.register);
+router.post("/register", sessionControllers.register);
 
 //Estrategia local mediante passport
 router.post("/login", passportCall("login"), sessionControllers.login);
