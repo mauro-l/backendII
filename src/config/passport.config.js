@@ -7,6 +7,7 @@ import { createHash, isValidPassword } from "../utils/hashPassword.js";
 import { cookieExtractor } from "../utils/cookieExtractor.js";
 import userRepository from "../persistence/MongoDB/repository/user.repository.js";
 import cartRepository from "../persistence/MongoDB/repository/cart.repository.js";
+import { validateBirthdate } from "../utils/validateBirthdate.js";
 
 const LocalStrategy = local.Strategy;
 const GoogleStrategy = google.Strategy;
@@ -19,10 +20,15 @@ export const initializePassport = () => {
       { passReqToCallback: true, usernameField: "email" },
       async (req, username, password, done) => {
         try {
-          const { first_name, last_name, age, role } = req.body;
+          const { first_name, last_name, birthdate, role, phone } = req.body;
           const user = await userRepository.getUsersByEmail(username);
           if (user) {
             return done(null, false, { message: "User already exists " });
+          }
+          if (!validateBirthdate(new Date(birthdate))) {
+            return res.status(400).json({
+              message: "The date of birth is invalid.",
+            });
           }
           const cart = await cartRepository.createCarts();
           const newUser = {
@@ -30,7 +36,8 @@ export const initializePassport = () => {
             last_name,
             password: createHash(password),
             email: username,
-            age,
+            birthdate,
+            phone,
             role,
             cart: cart._id,
           };

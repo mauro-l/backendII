@@ -2,7 +2,6 @@ import { userModel } from "../models/user.model.js";
 
 const getAllUsers = async (query, options) => {
   const users = await userModel.paginate(query, options);
-
   return users;
 };
 
