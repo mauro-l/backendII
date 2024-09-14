@@ -15,7 +15,7 @@ router.post(
 );
 
 //Estrategia local mediante passport
-router.post("/login", passportCall("login"), sessionControllers.login);
+router.post("/login", usePassportStrategy("login"), sessionControllers.login);
 
 //Inicio de session con token sin passport
 router.post("/auth", sessionControllers.loginAuth);
