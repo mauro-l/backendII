@@ -8,14 +8,10 @@ import sessionControllers from "../controllers/session.controllers.js";
 
 const router = Router();
 
-router.post(
-  "/register",
-  usePassportStrategy("register"),
-  sessionControllers.register
-);
+router.post("/register", passportCall("register"), sessionControllers.register);
 
 //Estrategia local mediante passport
-router.post("/login", usePassportStrategy("login"), sessionControllers.login);
+router.post("/login", passportCall("login"), sessionControllers.login);
 
 //Inicio de session con token sin passport
 router.post("/auth", sessionControllers.loginAuth);
